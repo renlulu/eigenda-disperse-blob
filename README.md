@@ -16,5 +16,5 @@ type DisperserClient interface {
 	DisperseBlobAuthenticated(ctx context.Context, opts ...grpc.CallOption) (Disperser_DisperseBlobAuthenticatedClient, error)
 ```
 
-It is basically using a simple two steps protocol to identify the sender address, thus EigenDA can track users' TPS and throughput more easily, as well as bandwidth payments. This repo mainly mostly for 
+It is basically using a simple two steps protocol to identify the sender address, thus EigenDA can track users' TPS and throughput more easily, as well as bandwidth payments. This repo mainly for 
 showing how the authentication process works, or anyone want get rid of the tedious code can use the function straightaway, although it is quite SIMPLE.
