@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Layr-Labs/eigenda/api/grpc/disperser"
+	"github.com/Layr-Labs/eigenda/encoding/utils/codec"
 	"github.com/ethereum/go-ethereum/crypto"
 	"log/slog"
 	"time"
@@ -16,8 +17,9 @@ var (
 	ErrEigenDADisperseTimeout = errors.New("disperse blob timeout")
 )
 
-func Disperse(ctx context.Context, client disperser.DisperserClient, privateKey string) (*disperser.RetrieveBlobRequest, error) {
-	disperseBlobReply, err := auth(ctx, client, privateKey)
+func Disperse(ctx context.Context, client disperser.DisperserClient, privateKey string, data []byte) (*disperser.RetrieveBlobRequest, error) {
+	data = codec.ConvertByPaddingEmptyByte(data)
+	disperseBlobReply, err := auth(ctx, client, privateKey, data)
 	if err != nil {
 		return nil, err
 	}
@@ -59,8 +61,10 @@ func Disperse(ctx context.Context, client disperser.DisperserClient, privateKey 
 
 }
 
-func auth(ctx context.Context, client disperser.DisperserClient, privateKey string) (*disperser.DisperseBlobReply, error) {
-	var r *disperser.DisperseBlobRequest
+func auth(ctx context.Context, client disperser.DisperserClient, privateKey string, data []byte) (*disperser.DisperseBlobReply, error) {
+	r := &disperser.DisperseBlobRequest{
+		Data: data,
+	}
 	priv, err := crypto.HexToECDSA(privateKey)
 	if err != nil {
 		return nil, err
